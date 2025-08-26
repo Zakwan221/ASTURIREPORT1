@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asturi Accounting System - Report Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #f5f7fa;
+            display: flex;
+            height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: #ffffff;
+            border-right: 1px solid #e1e5e9;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #e1e5e9;
+        }
+        
+        .system-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+        
+        .system-subtitle {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+        
+        .add-topic-btn {
+            margin: 15px;
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .add-topic-btn:hover {
+            background: #3367d6;
+        }
+        
+        .reports-section {
+            flex: 1;
+            padding: 10px 0;
+        }
+        
+        .report-category {
+            margin-bottom: 8px;
+        }
+        
+        .category-header {
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .category-header:hover {
+            background: #f8f9fa;
+        }
+        
+        .category-header.active {
+            background: #e3f2fd;
+            border-left: 3px solid #4285f4;
+        }
+        
+        .expand-icon {
+            margin-right: 8px;
+            font-size: 12px;
+            transition: transform 0.2s;
+            width: 12px;
+            height: 12px;
+            border-left: 6px solid #666;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+        }
+        
+        .expand-icon.expanded {
+            transform: rotate(90deg);
+        }
+        
+        .category-icon {
+            margin-right: 8px;
+            color: #4285f4;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            width: 12px;
+            height: 12px;
+            background: #4285f4;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+        
+        .category-title {
+            flex: 1;
+            font-size: 13px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        .category-date {
+            font-size: 11px;
+            color: #7f8c8d;
+            margin-top: 2px;
+        }
+        
+        .report-items {
+            display: none;
+            padding-left: 35px;
+        }
+        
+        .report-items.expanded {
+            display: block;
+        }
+        
+        .report-item {
+            padding: 6px 15px;
+            margin: 2px 0;
+            font-size: 12px;
+            color: #666;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .report-item:hover {
+            background: #f0f0f0;
+            color: #4285f4;
+        }
+        
+        .report-item.active {
+            background: #4285f4;
+            color: white;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+        
+        .content-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid #e1e5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .content-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+        
+        .content-subtitle {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .header-btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            color: #666;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .header-btn.primary {
+            background: #4285f4;
+            color: white;
+            border-color: #4285f4;
+        }
+        
+        .header-btn:hover {
+            border-color: #4285f4;
+            color: #4285f4;
+        }
+        
+        .header-btn.primary:hover {
+            background: #3367d6;
+        }
+        
+        .content-body {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 40px;
+        }
+        
+        .no-report-icon {
+            width: 80px;
+            height: 80px;
+            background: #f5f5f5;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .no-report-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .no-report-text {
+            color: #7f8c8d;
+            text-align: center;
+            line-height: 1.5;
+        }
+        
+        /* Report Content */
+        .report-content {
+            padding: 30px;
+            max-width: 100%;
+            overflow-y: auto;
+            display: none;
+            flex: 1;
+        }
+        
+        .report-content.active {
+            display: block;
+        }
+        
+        .report-content iframe {
+            width: 100%;
+            min-height: 800px;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+        }
+        
+        .report-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .tab-btn {
+            padding: 10px 20px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 6px 6px 0 0;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .tab-btn.active {
+            background: #4285f4;
+            color: white;
+            border-color: #4285f4;
+        }
+        
+        /* Report Link Cards */
+        .report-links {
+            padding: 20px 0;
+        }
+        
+        .report-link-card {
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            padding: 25px;
+            min-width: 280px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            margin-bottom: 15px;
+        }
+        
+        .report-link-card:hover {
+            border-color: #4285f4;
+            box-shadow: 0 4px 12px rgba(66, 133, 244, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .link-icon {
+            width: 50px;
+            height: 50px;
+            background: #f8f9fa;
+            border: 2px solid #4285f4;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #4285f4;
+            margin-bottom: 15px;
+        }
+        
+        .report-link-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .report-link-card p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        
+        .link-text {
+            color: #4285f4;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        /* Navigation bar for embedded reports */
+        .report-navigation {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-link {
+            color: #4285f4;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            background: #e3f2fd;
+        }
+
+        .nav-separator {
+            color: #6c757d;
+        }
+
+        .cards-grid {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="system-title">Asturi Accounting System</div>
+            <div class="system-subtitle">Report Management Edition</div>
+        </div>
+        
+        <button class="add-topic-btn">+ Add Topic</button>
+        
+        <div class="reports-section">
+            <div class="report-category">
+                <div class="category-header" onclick="toggleCategory('standard-format')">
+                    <span class="expand-icon"></span>
+                    <div>
+                        <div class="category-title">STANDARD FORMAT FOR FINANCE</div>
+                        <div class="category-date">Aug 5, 2025, 06:15 PM</div>
+                    </div>
+                </div>
+                <div class="report-items" id="standard-format">
+                    <div class="report-item" onclick="openBalanceSheetReport()">BALANCE SHEET</div>
+                    <div class="report-item" onclick="openProfitLossDirectly()">PROFIT AND LOSS</div>
+                </div>
+            </div>
+            
+            
+            <div class="report-category">
+                <div class="category-header" onclick="toggleCategory('revenue-report')">
+                    <span class="expand-icon"></span>
+                    <div>
+                        <div class="category-title">REPORT FOR REVENUE</div>
+                        <div class="category-date">Aug 5, 2025, 06:15 PM</div>
+                    </div>
+                </div>
+                <div class="report-items" id="revenue-report">
+                    <div class="report-item" onclick="openPropertyRentalReport()">Summary of Property Rental</div>
+                </div>
+            </div>
+            
+            <div class="report-category">
+                <div class="category-header" onclick="toggleCategory('invoice-payment-report')">
+                    <span class="expand-icon"></span>
+                    <div>
+                        <div class="category-title">REPORT FOR INVOICE & PAYMENT RECEIVED</div>
+                        <div class="category-date">Aug 5, 2025, 06:15 PM</div>
+                    </div>
+                </div>
+                <div class="report-items" id="invoice-payment-report">
+                    <div class="report-item" onclick="openExternalReport('RENTAL LOT 74-A, GEBENG.html')">Rental Lot 74-A, Gebeng</div>
+                    <div class="report-item" onclick="openExternalReport('RENTAL LOT 3 129 GEBENG.html')">Rental Lot 3/129, Gebeng</div>
+                    <div class="report-item" onclick="openExternalReport('RENTAL LAND.html')">Rental Land, Gebeng</div>
+                    <div class="report-item" onclick="openExternalReport('RENTAL BANGI.html')">Rental Bangi</div>
+                    <div class="report-item" onclick="openExternalReport('RENTAL JALAN KUCHING BLOK 3.html')">Rental Jalan Kuching - Blok 3</div>
+                    <div class="report-item" onclick="openExternalReport('RENTAL JALAN KUCHING - BLOK 3A.html')">Rental Jalan Kuching - Blok 3А</div>
+                    <div class="report-item" onclick="openExternalReport('SHORT TERM RENTAL.html')">Rental Short Term Rental</div>
+                    <div class="report-item" onclick="openExternalReport('RENTAL OF EQUIPMENT.html')">Rental of Equipment</div>
+                    <div class="report-item" onclick="openExternalReport('RENTAL OTHER.html')">Rental Others</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <div class="content-header">
+            <div>
+                <div class="content-title">Select a Report</div>
+                <div class="content-subtitle">Choose a report from the sidebar to get started</div>
+            </div>
+            <div class="header-buttons">
+                <button class="header-btn">Upload Report</button>
+                <button class="header-btn primary">Download Report</button>
+                <button class="header-btn">Storage Info</button>
+            </div>
+        </div>
+        
+        <div class="content-body" id="no-report-view">
+            <div class="no-report-icon">
+                <span style="font-size: 16px; color: #999; font-weight: 600;">DOC</span>
+            </div>
+            <div class="no-report-title">No Report Selected</div>
+            <div class="no-report-text">
+                Select a report from the sidebar to view details or create a new<br>
+                topic to get started
+            </div>
+        </div>
+        
+        <!-- Property Rental Report Content -->
+        <div class="report-content" id="property-rental-summary">
+            <div class="report-navigation">
+                <div class="nav-links">
+                    <a href="#" class="nav-link" onclick="showDashboard()">Back to Dashboard</a>
+                    <span class="nav-separator">|</span>
+                    <span style="color: #666; font-weight: 500;">Summary of Property Rental</span>
+                </div>
+            </div>
+            
+            <div class="report-links">
+                <h2>Summary of Property Rental</h2>
+                <p style="margin-bottom: 30px; color: #666;">Property rental income summary and analysis:</p>
+                
+                <div class="cards-grid">
+                    <div class="report-link-card" onclick="openExternalReport('SUMMARY PROPERTY.html')">
+                        <div class="link-icon">RPT</div>
+                        <h3>Complete Property Summary</h3>
+                        <p>Detailed summary of all property rental income and related information</p>
+                        <span class="link-text">Open Summary Report</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Balance Sheet Report Content -->
+        <div class="report-content" id="balance-sheet-statement">
+            <div class="report-navigation">
+                <div class="nav-links">
+                    <a href="#" class="nav-link" onclick="showDashboard()">Back to Dashboard</a>
+                    <span class="nav-separator">|</span>
+                    <span style="color: #666; font-weight: 500;">Balance Sheet Statement</span>
+                </div>
+            </div>
+            
+            <div class="report-links">
+                <h2>Balance Sheet - Financial Position Statement</h2>
+                <p style="margin-bottom: 30px; color: #666;">Select a section of the Balance Sheet to view:</p>
+                
+                <div class="cards-grid">
+                    <div class="report-link-card" onclick="openExternalReport('balance sheet page 1.html')">
+                        <div class="link-icon">P1</div>
+                        <h3>Page 1 - Assets & Equity</h3>
+                        <span class="link-text">Open Page 1</span>
+                    </div>
+                    
+                    <div class="report-link-card" onclick="openExternalReport('balance sheet page 2.html')">
+                        <div class="link-icon">P2</div>
+                        <h3>Page 2 - Liabilities & Totals</h3>
+                        <span class="link-text">Open Page 2</span>
+                    </div>
+                    
+                    <div class="report-link-card" onclick="openExternalReport('balance sheet page 3.html')">
+                        <div class="link-icon">P3</div>
+                        <h3>Page 3 - Notes & Details</h3>
+                        <span class="link-text">Open Page 3</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Profit & Loss Report Content -->
+        <div class="report-content" id="profit-loss-statement">
+            <div class="report-navigation">
+                <div class="nav-links">
+                    <a href="#" class="nav-link" onclick="showDashboard()">Back to Dashboard</a>
+                    <span class="nav-separator">|</span>
+                    <span style="color: #666; font-weight: 500;">Profit & Loss Statement</span>
+                </div>
+            </div>
+            
+            <div class="report-links">
+                <h2>Profit & Loss Statement</h2>
+                <p style="margin-bottom: 30px; color: #666;">Select a part of the Profit & Loss statement to view:</p>
+                
+                <div class="cards-grid">
+                    <div class="report-link-card" onclick="openExternalReport('LOSS AND PROFIT PART 1.html')">
+                        <div class="link-icon">P1</div>
+                        <h3>Part 1 - Revenue & Cost</h3>
+                        <p>Revenue sections and cost of sales breakdown</p>
+                        <span class="link-text">Open Part 1</span>
+                    </div>
+                    
+                    <div class="report-link-card" onclick="openExternalReport('LOSS AND PROFIT PART 2.html')">
+                        <div class="link-icon">P2</div>
+                        <h3>Part 2 - Expenses & Net Result</h3>
+                        <p>Operating expenses and final profit/loss calculation</p>
+                        <span class="link-text">Open Part 2</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        <div class="report-content" id="balance-sheet-monthly">
+            <div class="report-navigation">
+                <div class="nav-links">
+                    <a href="#" class="nav-link" onclick="showDashboard()">Back to Dashboard</a>
+                    <span class="nav-separator">|</span>
+                    <span style="color: #666; font-weight: 500;">Monthly Balance Sheet</span>
+                </div>
+            </div>
+            <h2>Balance Sheet - Monthly</h2>
+            <p>This would contain the monthly balance sheet report.</p>
+        </div>
+        
+        <div class="report-content" id="balance-sheet-yearly">
+            <div class="report-navigation">
+                <div class="nav-links">
+                    <a href="#" class="nav-link" onclick="showDashboard()">Back to Dashboard</a>
+                    <span class="nav-separator">|</span>
+                    <span style="color: #666; font-weight: 500;">Yearly Balance Sheet</span>
+                </div>
+            </div>
+            <h2>Balance Sheet - Yearly</h2>
+            <p>This would contain the yearly balance sheet report.</p>
+        </div>
+        
+        <div class="report-content" id="revenue-monthly">
+            <div class="report-navigation">
+                <div class="nav-links">
+                    <a href="#" class="nav-link" onclick="showDashboard()">Back to Dashboard</a>
+                    <span class="nav-separator">|</span>
+                    <span style="color: #666; font-weight: 500;">Monthly Revenue Report</span>
+                </div>
+            </div>
+            <h2>Revenue Report - Monthly</h2>
+            <p>This would contain the monthly revenue report.</p>
+        </div>
+        
+        <div class="report-content" id="revenue-quarterly">
+            <div class="report-navigation">
+                <div class="nav-links">
+                    <a href="#" class="nav-link" onclick="showDashboard()">Back to Dashboard</a>
+                    <span class="nav-separator">|</span>
+                    <span style="color: #666; font-weight: 500;">Quarterly Revenue Report</span>
+                </div>
+            </div>
+            <h2>Revenue Report - Quarterly</h2>
+            <p>This would contain the quarterly revenue report.</p>
+        </div>
+        
+        <!-- Iframe Container for External Reports -->
+        <div class="report-content" id="iframe-content">
+            <!-- Dynamic iframe content will be inserted here -->
+        </div>
+    </div>
+    
+    <script>
+        function toggleCategory(categoryId) {
+            const items = document.getElementById(categoryId);
+            const header = items.previousElementSibling;
+            const icon = header.querySelector('.expand-icon');
+            
+            if (items.classList.contains('expanded')) {
+                items.classList.remove('expanded');
+                icon.style.transform = 'rotate(0deg)';
+                header.classList.remove('active');
+            } else {
+                items.classList.add('expanded');
+                icon.style.transform = 'rotate(90deg)';
+                header.classList.add('active');
+            }
+        }
+        
+        function selectReport(reportId) {
+            // Hide no report view
+            document.getElementById('no-report-view').style.display = 'none';
+            
+            // Hide all report content
+            const allReports = document.querySelectorAll('.report-content');
+            allReports.forEach(report => report.classList.remove('active'));
+            
+            // Show selected report
+            const selectedReport = document.getElementById(reportId);
+            if (selectedReport) {
+                selectedReport.classList.add('active');
+            }
+            
+            // Update active state in sidebar
+            const allItems = document.querySelectorAll('.report-item');
+            allItems.forEach(item => item.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+        
+        function openPropertyRentalReport() {
+            selectReport('property-rental-summary');
+        }
+        
+        function openBalanceSheetReport() {
+            selectReport('balance-sheet-statement');
+        }
+        
+        function openProfitLossReport() {
+            selectReport('profit-loss-statement');
+        }
+        
+        function openProfitLossDirectly() {
+            selectReport('profit-loss-statement');
+        }
+        
+        function showDashboard() {
+            // Hide all report content
+            const allReports = document.querySelectorAll('.report-content');
+            allReports.forEach(report => report.classList.remove('active'));
+            
+            // Show dashboard
+            document.getElementById('no-report-view').style.display = 'flex';
+            
+            // Clear active states
+            const allItems = document.querySelectorAll('.report-item');
+            allItems.forEach(item => item.classList.remove('active'));
+            
+            // Update header
+            document.querySelector('.content-title').textContent = 'Select a Report';
+            document.querySelector('.content-subtitle').textContent = 'Choose a report from the sidebar to get started';
+        }
+        
+        function openExternalReport(filename) {
+            // Option 1: Open in new window (original behavior)
+            const newWindow = window.open(filename, '_blank');
+            
+            if (!newWindow) {
+                // Option 2: Embed in iframe if popup blocked
+                openReportInIframe(filename);
+            }
+        }
+        
+        function openReportInIframe(filename) {
+            // Hide no report view
+            document.getElementById('no-report-view').style.display = 'none';
+            
+            // Hide all report content
+            const allReports = document.querySelectorAll('.report-content');
+            allReports.forEach(report => report.classList.remove('active'));
+            
+            // Create or update iframe content
+            let iframeContent = document.getElementById('iframe-content');
+            
+            let reportName = '';
+            let breadcrumb = '';
+            let overviewFunction = '';
+            
+            if (filename.includes('PART 1')) {
+                reportName = 'Part 1 - Revenue & Cost';
+                breadcrumb = 'P&L Overview';
+                overviewFunction = 'selectReport(\'profit-loss-statement\')';
+            } else if (filename.includes('PART 2')) {
+                reportName = 'Part 2 - Expenses & Net Result';
+                breadcrumb = 'P&L Overview';
+                overviewFunction = 'selectReport(\'profit-loss-statement\')';
+            } else if (filename.includes('page 1')) {
+                reportName = 'Page 1 - Assets & Equity';
+                breadcrumb = 'Balance Sheet Overview';
+                overviewFunction = 'selectReport(\'balance-sheet-statement\')';
+            } else if (filename.includes('page 2')) {
+                reportName = 'Page 2 - Liabilities & Totals';
+                breadcrumb = 'Balance Sheet Overview';
+                overviewFunction = 'selectReport(\'balance-sheet-statement\')';
+            } else if (filename.includes('page 3')) {
+                reportName = 'Page 3 - Notes & Details';
+                breadcrumb = 'Balance Sheet Overview';
+                overviewFunction = 'selectReport(\'balance-sheet-statement\')';
+            } else if (filename.includes('SUMMARY PROPERTY')) {
+                reportName = 'Property Rental Summary';
+                breadcrumb = 'Revenue Reports';
+                overviewFunction = 'selectReport(\'property-rental-summary\')';
+            } else if (filename.includes('RENTAL LOT 74-A, GEBENG')) {
+                reportName = 'Rental Lot 74-A, Gebeng';
+                breadcrumb = 'Invoice & Payment Reports';
+                overviewFunction = 'showDashboard()';
+            } else if (filename.includes('RENTAL LOT 3 129 GEBENG')) {
+                reportName = 'Rental Lot 3/129, Gebeng';
+                breadcrumb = 'Invoice & Payment Reports';
+                overviewFunction = 'showDashboard()';
+            } else if (filename.includes('RENTAL LAND')) {
+                reportName = 'Rental Land, Gebeng';
+                breadcrumb = 'Invoice & Payment Reports';
+                overviewFunction = 'showDashboard()';
+            } else if (filename.includes('RENTAL BANGI')) {
+                reportName = 'Rental Bangi';
+                breadcrumb = 'Invoice & Payment Reports';
+                overviewFunction = 'showDashboard()';
+            } else if (filename.includes('RENTAL JALAN KUCHING BLOK 3.')) {
+                reportName = 'Rental Jalan Kuching - Blok 3';
+                breadcrumb = 'Invoice & Payment Reports';
+                overviewFunction = 'showDashboard()';
+            } else if (filename.includes('RENTAL JALAN KUCHING - BLOK 3A')) {
+                reportName = 'Rental Jalan Kuching - Blok 3А';
+                breadcrumb = 'Invoice & Payment Reports';
+                overviewFunction = 'showDashboard()';
+            } else if (filename.includes('SHORT TERM RENTAL')) {
+                reportName = 'Rental Short Term Rental';
+                breadcrumb = 'Invoice & Payment Reports';
+                overviewFunction = 'showDashboard()';
+            } else if (filename.includes('RENTAL OF EQUIPMENT')) {
+                reportName = 'Rental of Equipment';
+                breadcrumb = 'Invoice & Payment Reports';
+                overviewFunction = 'showDashboard()';
+            } else if (filename.includes('RENTAL OTHER')) {
+                reportName = 'Rental Others';
+                breadcrumb = 'Invoice & Payment Reports';
+                overviewFunction = 'showDashboard()';
+            }
+            
+            iframeContent.innerHTML = `
+                <div class="report-navigation">
+                    <div class="nav-links">
+                        <a href="#" class="nav-link" onclick="showDashboard()">Back to Dashboard</a>
+                        <span class="nav-separator">|</span>
+                        <a href="#" class="nav-link" onclick="${overviewFunction}">${breadcrumb}</a>
+                        <span class="nav-separator">|</span>
+                        <span style="color: #666; font-weight: 500;">${reportName}</span>
+                    </div>
+                </div>
+                <iframe src="${filename}" style="width: 100%; min-height: 800px; border: 1px solid #e1e5e9; border-radius: 8px;"></iframe>
+            `;
+            iframeContent.classList.add('active');
+            
+            // Update header
+            document.querySelector('.content-title').textContent = reportName;
+            document.querySelector('.content-subtitle').textContent = 'Detailed financial statement view';
+        }
+    </script>
+</body>
+</html>
