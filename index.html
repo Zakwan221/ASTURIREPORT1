@@ -16,6 +16,7 @@
             background: #f5f7fa;
             display: flex;
             height: 100vh;
+            overflow: hidden;
         }
         
         /* Sidebar */
@@ -26,6 +27,7 @@
             display: flex;
             flex-direction: column;
             overflow-y: auto;
+            flex-shrink: 0;
         }
         
         .sidebar-header {
@@ -161,6 +163,7 @@
             display: flex;
             flex-direction: column;
             background: white;
+            overflow: hidden;
         }
         
         .content-header {
@@ -169,6 +172,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0;
         }
         
         .content-title {
@@ -221,6 +225,7 @@
             justify-content: center;
             flex-direction: column;
             padding: 40px;
+            overflow: hidden;
         }
         
         .no-report-icon {
@@ -384,6 +389,36 @@
             gap: 20px;
             flex-wrap: wrap;
         }
+
+        /* Iframe Container */
+        .iframe-container {
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+        }
+
+        .iframe-container iframe {
+            width: 100%;
+            height: calc(100vh - 120px);
+            border: none;
+            display: block;
+        }
+
+        /* Print button for reports */
+        .print-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .print-btn:hover {
+            background: #218838;
+        }
     </style>
 </head>
 <body>
@@ -410,7 +445,6 @@
                 </div>
             </div>
             
-            
             <div class="report-category">
                 <div class="category-header" onclick="toggleCategory('revenue-report')">
                     <span class="expand-icon"></span>
@@ -433,18 +467,39 @@
                     </div>
                 </div>
                 <div class="report-items" id="invoice-payment-report">
-                    <div class="report-item" onclick="openExternalReport('RENTAL LOT 74-A, GEBENG.html')">Rental Lot 74-A, Gebeng</div>
-                    <div class="report-item" onclick="openExternalReport('RENTAL LOT 3 129 GEBENG.html')">Rental Lot 3/129, Gebeng</div>
-                    <div class="report-item" onclick="openExternalReport('RENTAL LAND.html')">Rental Land, Gebeng</div>
-                    <div class="report-item" onclick="openExternalReport('RENTAL BANGI.html')">Rental Bangi</div>
-                    <div class="report-item" onclick="openExternalReport('RENTAL JALAN KUCHING BLOK 3.html')">Rental Jalan Kuching - Blok 3</div>
-                    <div class="report-item" onclick="openExternalReport('RENTAL JALAN KUCHING - BLOK 3A.html')">Rental Jalan Kuching - Blok 3А</div>
-                    <div class="report-item" onclick="openExternalReport('SHORT TERM RENTAL.html')">Rental Short Term Rental</div>
-                    <div class="report-item" onclick="openExternalReport('RENTAL OF EQUIPMENT.html')">Rental of Equipment</div>
-                    <div class="report-item" onclick="openExternalReport('RENTAL OTHER.html')">Rental Others</div>
+                    <div class="report-item" onclick="openExternalReport('RENTAL LOT 74-A, GEBENG.html', 'Rental Lot 74-A, Gebeng')">Rental Lot 74-A, Gebeng</div>
+                    <div class="report-item" onclick="openExternalReport('RENTAL LOT 3 129 GEBENG.html', 'Rental Lot 3/129, Gebeng')">Rental Lot 3/129, Gebeng</div>
+                    <div class="report-item" onclick="openExternalReport('RENTAL LAND.html', 'Rental Land, Gebeng')">Rental Land, Gebeng</div>
+                    <div class="report-item" onclick="openExternalReport('RENTAL BANGI.html', 'Rental Bangi')">Rental Bangi</div>
+                    <div class="report-item" onclick="openExternalReport('RENTAL JALAN KUCHING BLOK 3.html', 'Rental Jalan Kuching - Blok 3')">Rental Jalan Kuching - Blok 3</div>
+                    <div class="report-item" onclick="openExternalReport('RENTAL JALAN KUCHING - BLOK 3A.html', 'Rental Jalan Kuching - Blok 3A')">Rental Jalan Kuching - Blok 3A</div>
+                    <div class="report-item" onclick="openExternalReport('SHORT TERM RENTAL.html', 'Rental Short Term Rental')">Rental Short Term Rental</div>
+                    <div class="report-item" onclick="openExternalReport('RENTAL OF EQUIPMENT.html', 'Rental of Equipment')">Rental of Equipment</div>
+                    <div class="report-item" onclick="openExternalReport('RENTAL OTHER.html', 'Rental Others')">Rental Others</div>
                 </div>
             </div>
 
+            <!-- REPORT FOR COST OF SALES -->
+            <div class="report-category">
+                <div class="category-header" onclick="toggleCategory('cost-of-sales-report')">
+                    <span class="expand-icon"></span>
+                    <div>
+                        <div class="category-title">REPORT FOR COST OF SALES</div>
+                        <div class="category-date">Aug 5, 2025, 06:15 PM</div>
+                    </div>
+                </div>
+                <div class="report-items" id="cost-of-sales-report">
+                    <div class="report-item" onclick="openCostOfSalesReport('RENTAL LOT 74-A COS.html', 'Rental Lot 74-A, Gebeng - COS')">Rental Lot 74-A, Gebeng</div>
+                    <div class="report-item" onclick="openCostOfSalesReport('RENTAL LOT 3 129, GEBENG COS.html', 'Rental Lot 3/129, Gebeng - COS')">Rental Lot 3/129, Gebeng</div>
+                    <div class="report-item" onclick="openCostOfSalesReport('RENTAL LAND COS.html', 'Rental Land, Gebeng - COS')">Rental Land, Gebeng</div>
+                    <div class="report-item" onclick="openRentalBangiCOSReport()">Rental Bangi</div>
+                    <div class="report-item" onclick="openCostOfSalesReport('RENTAL JALAN KUCHING BLOK 3 COS.html', 'Rental Jalan Kuching - Blok 3 COS')">Rental Jalan Kuching - Blok 3</div>
+                    <div class="report-item" onclick="openCostOfSalesReport('RENTAL JALAN KUCHING BLOK 3A COS.html', 'Rental Jalan Kuching - Blok 3A COS')">Rental Jalan Kuching - Blok 3A</div>
+                    <div class="report-item" onclick="openCostOfSalesReport('RENTAL SHORT TERM RENTAL COS.html', 'Short Term Rental - COS')">Short Term Rental</div>
+                    <div class="report-item" onclick="openCostOfSalesReport('RENTAL OF EQUIPMENT COS.html', 'Rental of Equipment - COS')">Rental of Equipment</div>
+                    <div class="report-item" onclick="openCostOfSalesReport('RENTAL OTHER COS.html', 'Rental Others - COS')">Rental Others</div>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -455,6 +510,7 @@
                 <div class="content-subtitle">Choose a report from the sidebar to get started</div>
             </div>
             <div class="header-buttons">
+                <button class="header-btn print-btn" onclick="printCurrentReport()" style="display: none;">Print Report</button>
                 <button class="header-btn">Upload Report</button>
                 <button class="header-btn primary">Download Report</button>
                 <button class="header-btn">Storage Info</button>
@@ -487,7 +543,7 @@
                 <p style="margin-bottom: 30px; color: #666;">Property rental income summary and analysis:</p>
                 
                 <div class="cards-grid">
-                    <div class="report-link-card" onclick="openExternalReport('SUMMARY PROPERTY.html')">
+                    <div class="report-link-card" onclick="openExternalReport('SUMMARY PROPERTY.html', 'Complete Property Summary')">
                         <div class="link-icon">RPT</div>
                         <h3>Complete Property Summary</h3>
                         <p>Detailed summary of all property rental income and related information</p>
@@ -512,19 +568,19 @@
                 <p style="margin-bottom: 30px; color: #666;">Select a section of the Balance Sheet to view:</p>
                 
                 <div class="cards-grid">
-                    <div class="report-link-card" onclick="openExternalReport('balance sheet page 1.html')">
+                    <div class="report-link-card" onclick="openExternalReport('balance sheet page 1.html', 'Balance Sheet - Page 1')">
                         <div class="link-icon">P1</div>
                         <h3>Page 1 - Assets & Equity</h3>
                         <span class="link-text">Open Page 1</span>
                     </div>
                     
-                    <div class="report-link-card" onclick="openExternalReport('balance sheet page 2.html')">
+                    <div class="report-link-card" onclick="openExternalReport('balance sheet page 2.html', 'Balance Sheet - Page 2')">
                         <div class="link-icon">P2</div>
                         <h3>Page 2 - Liabilities & Totals</h3>
                         <span class="link-text">Open Page 2</span>
                     </div>
                     
-                    <div class="report-link-card" onclick="openExternalReport('balance sheet page 3.html')">
+                    <div class="report-link-card" onclick="openExternalReport('balance sheet page 3.html', 'Balance Sheet - Page 3')">
                         <div class="link-icon">P3</div>
                         <h3>Page 3 - Notes & Details</h3>
                         <span class="link-text">Open Page 3</span>
@@ -548,14 +604,14 @@
                 <p style="margin-bottom: 30px; color: #666;">Select a part of the Profit & Loss statement to view:</p>
                 
                 <div class="cards-grid">
-                    <div class="report-link-card" onclick="openExternalReport('LOSS AND PROFIT PART 1.html')">
+                    <div class="report-link-card" onclick="openExternalReport('LOSS AND PROFIT PART 1.html', 'P&L Statement - Part 1')">
                         <div class="link-icon">P1</div>
                         <h3>Part 1 - Revenue & Cost</h3>
                         <p>Revenue sections and cost of sales breakdown</p>
                         <span class="link-text">Open Part 1</span>
                     </div>
                     
-                    <div class="report-link-card" onclick="openExternalReport('LOSS AND PROFIT PART 2.html')">
+                    <div class="report-link-card" onclick="openExternalReport('LOSS AND PROFIT PART 2.html', 'P&L Statement - Part 2')">
                         <div class="link-icon">P2</div>
                         <h3>Part 2 - Expenses & Net Result</h3>
                         <p>Operating expenses and final profit/loss calculation</p>
@@ -565,53 +621,36 @@
             </div>
         </div>
         
-        
-        <div class="report-content" id="balance-sheet-monthly">
+        <!-- Rental Bangi COS Report with Parts -->
+        <div class="report-content" id="rental-bangi-cos">
             <div class="report-navigation">
                 <div class="nav-links">
                     <a href="#" class="nav-link" onclick="showDashboard()">Back to Dashboard</a>
                     <span class="nav-separator">|</span>
-                    <span style="color: #666; font-weight: 500;">Monthly Balance Sheet</span>
+                    <span style="color: #666; font-weight: 500;">Rental Bangi - Cost of Sales</span>
                 </div>
             </div>
-            <h2>Balance Sheet - Monthly</h2>
-            <p>This would contain the monthly balance sheet report.</p>
-        </div>
-        
-        <div class="report-content" id="balance-sheet-yearly">
-            <div class="report-navigation">
-                <div class="nav-links">
-                    <a href="#" class="nav-link" onclick="showDashboard()">Back to Dashboard</a>
-                    <span class="nav-separator">|</span>
-                    <span style="color: #666; font-weight: 500;">Yearly Balance Sheet</span>
+            
+            <div class="report-links">
+                <h2>Rental Bangi - Cost of Sales</h2>
+                <p style="margin-bottom: 30px; color: #666;">Select a part of the Rental Bangi Cost of Sales to view:</p>
+                
+                <div class="cards-grid">
+                    <div class="report-link-card" onclick="openCostOfSalesReport('RENTAL BANGI COS.html', 'Rental Bangi - COS Part 1')">
+                        <div class="link-icon">P1</div>
+                        <h3>Part 1 - Building Service & Cukai Taksiran</h3>
+                        <p>Building service charges and assessment tax breakdown</p>
+                        <span class="link-text">Open Part 1</span>
+                    </div>
+                    
+                    <div class="report-link-card" onclick="openCostOfSalesReport('RENTAL BANGI PART 2 COS.html', 'Rental Bangi - COS Part 2')">
+                        <div class="link-icon">P2</div>
+                        <h3>Part 2 - Cleaning & Commission</h3>
+                        <p>Cleaning rubbish and commission agent costs</p>
+                        <span class="link-text">Open Part 2</span>
+                    </div>
                 </div>
             </div>
-            <h2>Balance Sheet - Yearly</h2>
-            <p>This would contain the yearly balance sheet report.</p>
-        </div>
-        
-        <div class="report-content" id="revenue-monthly">
-            <div class="report-navigation">
-                <div class="nav-links">
-                    <a href="#" class="nav-link" onclick="showDashboard()">Back to Dashboard</a>
-                    <span class="nav-separator">|</span>
-                    <span style="color: #666; font-weight: 500;">Monthly Revenue Report</span>
-                </div>
-            </div>
-            <h2>Revenue Report - Monthly</h2>
-            <p>This would contain the monthly revenue report.</p>
-        </div>
-        
-        <div class="report-content" id="revenue-quarterly">
-            <div class="report-navigation">
-                <div class="nav-links">
-                    <a href="#" class="nav-link" onclick="showDashboard()">Back to Dashboard</a>
-                    <span class="nav-separator">|</span>
-                    <span style="color: #666; font-weight: 500;">Quarterly Revenue Report</span>
-                </div>
-            </div>
-            <h2>Revenue Report - Quarterly</h2>
-            <p>This would contain the quarterly revenue report.</p>
         </div>
         
         <!-- Iframe Container for External Reports -->
@@ -637,7 +676,7 @@
             }
         }
         
-        function selectReport(reportId) {
+        function selectReport(reportId, clickedElement) {
             // Hide no report view
             document.getElementById('no-report-view').style.display = 'none';
             
@@ -654,23 +693,37 @@
             // Update active state in sidebar
             const allItems = document.querySelectorAll('.report-item');
             allItems.forEach(item => item.classList.remove('active'));
-            event.target.classList.add('active');
+            
+            if (clickedElement) {
+                clickedElement.classList.add('active');
+            }
+            
+            // Hide print button for overview pages
+            const printBtn = document.querySelector('.print-btn');
+            if (printBtn) {
+                printBtn.style.display = 'none';
+            }
         }
         
         function openPropertyRentalReport() {
-            selectReport('property-rental-summary');
+            selectReport('property-rental-summary', event.target);
         }
         
         function openBalanceSheetReport() {
-            selectReport('balance-sheet-statement');
+            selectReport('balance-sheet-statement', event.target);
         }
         
         function openProfitLossReport() {
-            selectReport('profit-loss-statement');
+            selectReport('profit-loss-statement', event.target);
         }
         
         function openProfitLossDirectly() {
-            selectReport('profit-loss-statement');
+            selectReport('profit-loss-statement', event.target);
+        }
+        
+        // Function for Rental Bangi COS with parts
+        function openRentalBangiCOSReport() {
+            selectReport('rental-bangi-cos', event.target);
         }
         
         function showDashboard() {
@@ -688,19 +741,15 @@
             // Update header
             document.querySelector('.content-title').textContent = 'Select a Report';
             document.querySelector('.content-subtitle').textContent = 'Choose a report from the sidebar to get started';
-        }
-        
-        function openExternalReport(filename) {
-            // Option 1: Open in new window (original behavior)
-            const newWindow = window.open(filename, '_blank');
             
-            if (!newWindow) {
-                // Option 2: Embed in iframe if popup blocked
-                openReportInIframe(filename);
+            // Hide print button
+            const printBtn = document.querySelector('.print-btn');
+            if (printBtn) {
+                printBtn.style.display = 'none';
             }
         }
         
-        function openReportInIframe(filename) {
+        function openExternalReport(filename, reportTitle) {
             // Hide no report view
             document.getElementById('no-report-view').style.display = 'none';
             
@@ -708,71 +757,31 @@
             const allReports = document.querySelectorAll('.report-content');
             allReports.forEach(report => report.classList.remove('active'));
             
+            // Update active state in sidebar
+            const allItems = document.querySelectorAll('.report-item');
+            allItems.forEach(item => item.classList.remove('active'));
+            if (event.target) {
+                event.target.classList.add('active');
+            }
+            
             // Create or update iframe content
             let iframeContent = document.getElementById('iframe-content');
             
-            let reportName = '';
-            let breadcrumb = '';
-            let overviewFunction = '';
+            let reportName = reportTitle || filename.replace('.html', '');
+            let breadcrumb = 'Reports';
+            let overviewFunction = 'showDashboard()';
             
-            if (filename.includes('PART 1')) {
-                reportName = 'Part 1 - Revenue & Cost';
+            // Determine breadcrumb based on filename
+            if (filename.includes('PART 1') || filename.includes('PART 2')) {
                 breadcrumb = 'P&L Overview';
                 overviewFunction = 'selectReport(\'profit-loss-statement\')';
-            } else if (filename.includes('PART 2')) {
-                reportName = 'Part 2 - Expenses & Net Result';
-                breadcrumb = 'P&L Overview';
-                overviewFunction = 'selectReport(\'profit-loss-statement\')';
-            } else if (filename.includes('page 1')) {
-                reportName = 'Page 1 - Assets & Equity';
-                breadcrumb = 'Balance Sheet Overview';
-                overviewFunction = 'selectReport(\'balance-sheet-statement\')';
-            } else if (filename.includes('page 2')) {
-                reportName = 'Page 2 - Liabilities & Totals';
-                breadcrumb = 'Balance Sheet Overview';
-                overviewFunction = 'selectReport(\'balance-sheet-statement\')';
-            } else if (filename.includes('page 3')) {
-                reportName = 'Page 3 - Notes & Details';
+            } else if (filename.includes('page 1') || filename.includes('page 2') || filename.includes('page 3')) {
                 breadcrumb = 'Balance Sheet Overview';
                 overviewFunction = 'selectReport(\'balance-sheet-statement\')';
             } else if (filename.includes('SUMMARY PROPERTY')) {
-                reportName = 'Property Rental Summary';
                 breadcrumb = 'Revenue Reports';
                 overviewFunction = 'selectReport(\'property-rental-summary\')';
-            } else if (filename.includes('RENTAL LOT 74-A, GEBENG')) {
-                reportName = 'Rental Lot 74-A, Gebeng';
-                breadcrumb = 'Invoice & Payment Reports';
-                overviewFunction = 'showDashboard()';
-            } else if (filename.includes('RENTAL LOT 3 129 GEBENG')) {
-                reportName = 'Rental Lot 3/129, Gebeng';
-                breadcrumb = 'Invoice & Payment Reports';
-                overviewFunction = 'showDashboard()';
-            } else if (filename.includes('RENTAL LAND')) {
-                reportName = 'Rental Land, Gebeng';
-                breadcrumb = 'Invoice & Payment Reports';
-                overviewFunction = 'showDashboard()';
-            } else if (filename.includes('RENTAL BANGI')) {
-                reportName = 'Rental Bangi';
-                breadcrumb = 'Invoice & Payment Reports';
-                overviewFunction = 'showDashboard()';
-            } else if (filename.includes('RENTAL JALAN KUCHING BLOK 3.')) {
-                reportName = 'Rental Jalan Kuching - Blok 3';
-                breadcrumb = 'Invoice & Payment Reports';
-                overviewFunction = 'showDashboard()';
-            } else if (filename.includes('RENTAL JALAN KUCHING - BLOK 3A')) {
-                reportName = 'Rental Jalan Kuching - Blok 3А';
-                breadcrumb = 'Invoice & Payment Reports';
-                overviewFunction = 'showDashboard()';
-            } else if (filename.includes('SHORT TERM RENTAL')) {
-                reportName = 'Rental Short Term Rental';
-                breadcrumb = 'Invoice & Payment Reports';
-                overviewFunction = 'showDashboard()';
-            } else if (filename.includes('RENTAL OF EQUIPMENT')) {
-                reportName = 'Rental of Equipment';
-                breadcrumb = 'Invoice & Payment Reports';
-                overviewFunction = 'showDashboard()';
-            } else if (filename.includes('RENTAL OTHER')) {
-                reportName = 'Rental Others';
+            } else {
                 breadcrumb = 'Invoice & Payment Reports';
                 overviewFunction = 'showDashboard()';
             }
@@ -787,14 +796,105 @@
                         <span style="color: #666; font-weight: 500;">${reportName}</span>
                     </div>
                 </div>
-                <iframe src="${filename}" style="width: 100%; min-height: 800px; border: 1px solid #e1e5e9; border-radius: 8px;"></iframe>
+                <div class="iframe-container">
+                    <iframe src="${filename}" title="${reportName}"></iframe>
+                </div>
             `;
             iframeContent.classList.add('active');
             
             // Update header
             document.querySelector('.content-title').textContent = reportName;
             document.querySelector('.content-subtitle').textContent = 'Detailed financial statement view';
+            
+            // Show print button
+            const printBtn = document.querySelector('.print-btn');
+            if (printBtn) {
+                printBtn.style.display = 'inline-block';
+            }
         }
+        
+        // Function specifically for Cost of Sales reports
+        function openCostOfSalesReport(filename, reportTitle) {
+            // Hide no report view
+            document.getElementById('no-report-view').style.display = 'none';
+            
+            // Hide all report content
+            const allReports = document.querySelectorAll('.report-content');
+            allReports.forEach(report => report.classList.remove('active'));
+            
+            // Update active state in sidebar
+            const allItems = document.querySelectorAll('.report-item');
+            allItems.forEach(item => item.classList.remove('active'));
+            if (event.target) {
+                event.target.classList.add('active');
+            }
+            
+            // Create or update iframe content
+            let iframeContent = document.getElementById('iframe-content');
+            
+            let reportName = reportTitle || filename.replace(' COS.html', '');
+            let breadcrumb = 'Cost of Sales Reports';
+            let overviewFunction = 'showDashboard()';
+            
+            // Special handling for Rental Bangi parts
+            if (filename.includes('RENTAL BANGI')) {
+                breadcrumb = 'Rental Bangi COS';
+                overviewFunction = 'selectReport(\'rental-bangi-cos\')';
+            }
+            
+            iframeContent.innerHTML = `
+                <div class="report-navigation">
+                    <div class="nav-links">
+                        <a href="#" class="nav-link" onclick="showDashboard()">Back to Dashboard</a>
+                        <span class="nav-separator">|</span>
+                        <a href="#" class="nav-link" onclick="${overviewFunction}">${breadcrumb}</a>
+                        <span class="nav-separator">|</span>
+                        <span style="color: #666; font-weight: 500;">${reportName}</span>
+                    </div>
+                </div>
+                <div class="iframe-container">
+                    <iframe src="${filename}" title="${reportName}"></iframe>
+                </div>
+            `;
+            iframeContent.classList.add('active');
+            
+            // Update header
+            document.querySelector('.content-title').textContent = reportName;
+            document.querySelector('.content-subtitle').textContent = 'Cost of Sales detailed report';
+            
+            // Show print button
+            const printBtn = document.querySelector('.print-btn');
+            if (printBtn) {
+                printBtn.style.display = 'inline-block';
+            }
+        }
+        
+        function printCurrentReport() {
+            const activeReport = document.querySelector('.report-content.active');
+            if (activeReport && activeReport.id === 'iframe-content') {
+                const iframe = activeReport.querySelector('iframe');
+                if (iframe) {
+                    try {
+                        iframe.contentWindow.print();
+                    } catch (e) {
+                        // Fallback to printing the entire page
+                        window.print();
+                    }
+                }
+            } else {
+                window.print();
+            }
+        }
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-expand first category for better UX
+            const firstCategory = document.querySelector('.report-category');
+            if (firstCategory) {
+                const categoryId = firstCategory.querySelector('.report-items').id;
+                toggleCategory(categoryId);
+            }
+        });
     </script>
 </body>
 </html>
